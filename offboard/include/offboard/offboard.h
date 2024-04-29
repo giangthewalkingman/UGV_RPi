@@ -8,6 +8,7 @@
 #include<vector>
 #include<wiringPi.h>
 #include<wiringPiI2C.h>
+#include<std_msgs/Bool.h>
 
 #define DEVICE_ID 0x08
 
@@ -20,9 +21,15 @@ class OffboardControl
     ros::NodeHandle nh_;
 	ros::NodeHandle nh_private_;
 
+    ros::Subscriber arm_mode_sub;
+
+    std_msgs::Bool arm_mode_;
+
+    void armModeCallback(const std_msgs::Bool::ConstPtr &msg);
+
     void offboard();
     void i2cSetup();
-    void waitForArming();
+    void waitForArming(double hz);
 };
 
 #endif
