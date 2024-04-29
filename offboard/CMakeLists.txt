@@ -53,11 +53,18 @@ target_link_libraries(offboard_lib
   /usr/lib/libwiringPi.so
 )
 
+target_link_libraries(offboard_lib 
+  /usr/lib/x86_64-linux-gnu/libcurses.so
+)
+
+target_link_libraries(offboard_lib 
+  /usr/lib/x86_64-linux-gnu/libncurses.so
+)
+
 add_executable(offboard_node src/offboard_node.cpp)
 target_link_libraries(offboard_node
   offboard_lib
 )
-
 
 # catkin_install_python(PROGRAMS
 #   scripts/MarkerDetection.py

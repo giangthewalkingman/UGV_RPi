@@ -2,10 +2,14 @@
 #define OFFBOARD_H_
 
 #include<ros/ros.h>
+#include<ros/time.h>
 #include<iostream>
 #include<cmath>
 #include<cstdio>
 #include<vector>
+#include<unistd.h>
+#include<ncurses.h>
+#include<curses.h>
 #include<wiringPi.h>
 #include<wiringPiI2C.h>
 #include<std_msgs/Bool.h>
@@ -25,11 +29,19 @@ class OffboardControl
 
     std_msgs::Bool arm_mode_;
 
+    int16_t pwmArray[4];
+    ros::Time operation_time_1, operation_time_2;
+
     void armModeCallback(const std_msgs::Bool::ConstPtr &msg);
 
     void offboard();
+    void landing();
+    void teleopControl();
     void i2cSetup();
     void waitForArming(double hz);
+    void initNcurses();
+    void cleanupNcurses();
+
 };
 
 #endif
