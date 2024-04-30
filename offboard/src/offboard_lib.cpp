@@ -36,7 +36,7 @@ void OffboardControl::offboard() {
 }
 
 void OffboardControl::i2cSetup() {
-    int fd = wiringPiI2CSetup(DEVICE_ID);
+    fd = wiringPiI2CSetup(DEVICE_ID);
     if (fd == -1) {
         std::cout << "Failed to init I2C communication.\n";
     } else {
@@ -60,18 +60,22 @@ void OffboardControl::teleopControl() {
     while ((ch = getch()) != 'q') { // Loop until 'q' is pressed
         switch(ch) {
             case KEY_UP:
+                sendI2CMsg(pwmValue[0], pwmValue[1], pwmValue[2], pwmValue[3], FORWARD);
                 std::cout << "Forward\n";
                 // Adjust PWM values and direction for forward motion
                 break;
             case KEY_DOWN:
+                sendI2CMsg(pwmValue[0], pwmValue[1], pwmValue[2], pwmValue[3], BACKWARD);
                 std::cout << "Backward\n";
                 // Adjust PWM values and direction for backward motion
                 break;
             case KEY_LEFT:
+                sendI2CMsg(pwmValue[0], pwmValue[1], pwmValue[2], pwmValue[3], TURNLEFT);
                 std::cout << "Left\n";
                 // Adjust PWM values and direction for left turn
                 break;
             case KEY_RIGHT:
+                sendI2CMsg(pwmValue[0], pwmValue[1], pwmValue[2], pwmValue[3], TURNRIGHT);
                 std::cout << "Right\n";
                 // Adjust PWM values and direction for right turn
                 break;
@@ -103,7 +107,16 @@ void OffboardControl::cleanupNcurses() {
 }
 
 void OffboardControl::landing() {
+    sendI2CMsg(0, 0, 0, 0, STOP);
     operation_time_2 = ros::Time::now();
     std::printf("\n[ INFO] Operation time %.1f (s)\n\n", (operation_time_2 - operation_time_1).toSec());
     ros::shutdown();
+}
+
+void OffboardControl::sendI2CMsg(uint8_t right_front_pwm, uint8_t left_front_pwm, uint8_t right_back_pwm, uint8_t left_back_pwm, uint8_t direction) {
+    wiringPiI2CWrite(fd, right_front_pwm);
+    wiringPiI2CWrite(fd, left_front_pwm);
+    wiringPiI2CWrite(fd, right_back_pwm);
+    wiringPiI2CWrite(fd, left_back_pwm);
+    wiringPiI2CWrite(fd, direction);
 }
