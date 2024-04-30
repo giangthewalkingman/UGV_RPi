@@ -6,6 +6,7 @@
 #include<iostream>
 #include<cmath>
 #include<cstdio>
+#include<string>
 #include<vector>
 #include<unistd.h>
 #include<ncurses.h>
@@ -55,7 +56,8 @@ class OffboardControl
     int fd = 0;
 
     // right front - left front - right back - left back
-    int16_t pwmValue[4];
+    uint8_t pwmValue[4];
+    uint8_t PWM_INCREMENT = 0;
     ros::Time operation_time_1, operation_time_2;
 
     void armModeCallback(const std_msgs::Bool::ConstPtr &msg);
@@ -67,6 +69,7 @@ class OffboardControl
     void waitForArming(double hz);
     void initNcurses();
     void cleanupNcurses();
+    void printPWM(uint8_t pwmValues[], std::string direction);
     void sendI2CMsg(uint8_t right_front_pwm, uint8_t left_front_pwm, uint8_t right_back_pwm, uint8_t left_back_pwm, uint8_t direction);
 };
 

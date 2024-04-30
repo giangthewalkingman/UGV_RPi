@@ -61,23 +61,57 @@ void OffboardControl::teleopControl() {
         switch(ch) {
             case KEY_UP:
                 sendI2CMsg(pwmValue[0], pwmValue[1], pwmValue[2], pwmValue[3], FORWARD);
-                std::cout << "Forward\n";
+                printPWM(pwmValue, "Forward"); 
                 // Adjust PWM values and direction for forward motion
                 break;
             case KEY_DOWN:
                 sendI2CMsg(pwmValue[0], pwmValue[1], pwmValue[2], pwmValue[3], BACKWARD);
-                std::cout << "Backward\n";
+                printPWM(pwmValue, "Backward"); 
                 // Adjust PWM values and direction for backward motion
                 break;
             case KEY_LEFT:
                 sendI2CMsg(pwmValue[0], pwmValue[1], pwmValue[2], pwmValue[3], TURNLEFT);
-                std::cout << "Left\n";
+                printPWM(pwmValue, "Turn left"); 
                 // Adjust PWM values and direction for left turn
                 break;
             case KEY_RIGHT:
                 sendI2CMsg(pwmValue[0], pwmValue[1], pwmValue[2], pwmValue[3], TURNRIGHT);
-                std::cout << "Right\n";
+                printPWM(pwmValue, "Turn right"); 
                 // Adjust PWM values and direction for right turn
+                break;
+            case 'w':
+                // Increase PWM values
+                pwmValue[0] += PWM_INCREMENT;
+                pwmValue[1] += PWM_INCREMENT;
+                pwmValue[2] += PWM_INCREMENT;
+                pwmValue[3] += PWM_INCREMENT;
+                for(int i = 0; i < 3; i ++) {
+                    if(pwmValue[i] < 0) {
+                        pwmValue[i] = 0;
+                    } else if(pwmValue[i] > 255) {
+                        pwmValue[i] = 255;
+                    }
+                }
+                printPWM(pwmValue, "\t"); 
+                // std::cout << "Increased PWM\n";
+                // printPWM(pwmValue); // Print PWM values
+                break;
+            case 's':
+                // Decrease PWM values
+                pwmValue[0] -= PWM_INCREMENT;
+                pwmValue[1] -= PWM_INCREMENT;
+                pwmValue[2] -= PWM_INCREMENT;
+                pwmValue[3] -= PWM_INCREMENT;
+                for(int i = 0; i < 3; i ++) {
+                    if(pwmValue[i] < 0) {
+                        pwmValue[i] = 0;
+                    } else if(pwmValue[i] > 255) {
+                        pwmValue[i] = 255;
+                    }
+                }
+                printPWM(pwmValue, "\t"); 
+                // std::cout << "Decreased PWM\n";
+                // printPWM(pwmValue); // Print PWM values
                 break;
             default:
                 std::cout << "Invalid input\n";
@@ -119,4 +153,16 @@ void OffboardControl::sendI2CMsg(uint8_t right_front_pwm, uint8_t left_front_pwm
     wiringPiI2CWrite(fd, right_back_pwm);
     wiringPiI2CWrite(fd, left_back_pwm);
     wiringPiI2CWrite(fd, direction);
+}
+
+// Function to display PWM values
+void OffboardControl::printPWM(uint8_t pwmValues[], std::string direction) {
+    clear(); // Clear the screen
+    mvprintw(0, 0, "PWM Values:");
+    mvprintw(1, 0, "Motor 1: %d", pwmValues[0]);
+    mvprintw(2, 0, "Motor 2: %d", pwmValues[1]);
+    mvprintw(3, 0, "Motor 3: %d", pwmValues[2]);
+    mvprintw(4, 0, "Motor 4: %d", pwmValues[3]);
+    mvprintw(5, 0, "%s", direction);
+    refresh(); // Refresh the screen
 }

@@ -53,6 +53,7 @@ target_link_libraries(offboard_lib
   /usr/lib/libwiringPi.so
 )
 
+# for build on your laptop
 target_link_libraries(offboard_lib 
   /usr/lib/x86_64-linux-gnu/libcurses.so
 )
@@ -60,6 +61,24 @@ target_link_libraries(offboard_lib
 target_link_libraries(offboard_lib 
   /usr/lib/x86_64-linux-gnu/libncurses.so
 )
+
+target_link_libraries(offboard_lib 
+/usr/lib/x86_64-linux-gnu/librt.so
+)
+
+# for build on rpi server
+# target_link_libraries(offboard_lib 
+#   /usr/lib/aarch64-linux-gnu/libcurses.so
+# )
+
+# target_link_libraries(offboard_lib 
+#   /usr/lib/aarch64-linux-gnu/libncurses.so
+# )
+
+# target_link_libraries(offboard_lib 
+#   /usr/lib/aarch64-linux-gnu/librt.so
+# )
+
 
 add_executable(offboard_node src/offboard_node.cpp)
 target_link_libraries(offboard_node
